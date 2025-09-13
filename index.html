@@ -2396,6 +2396,202 @@
             font-display: swap;
         }
     </style>
+    <script>
+        (function () {
+                // This script is self-contained. It injects its own CSS and adds all necessary event listeners.
+
+                // 1. --- Inject the necessary CSS for the modal ---
+                const modalStyles = `
+        .product-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+        .product-modal-overlay.visible {
+            opacity: 1;
+        }
+        .product-modal-content {
+            position: relative;
+            background: #1f2120;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            width: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: default;
+        }
+        .product-modal-overlay.visible .product-modal-content {
+            transform: scale(1);
+        }
+        .product-modal-image {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            /* Calculate max height to leave space for title */
+            max-height: calc(90vh - 100px);
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .product-modal-title {
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.3;
+        }
+        .product-modal-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #00B5E2;
+            color: #1f2120;
+            border: 2px solid #1f2120;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 181, 226, 0.3);
+        }
+        .product-modal-close:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+    `;
+
+                // Create a <style> element and append it to the <head>
+                const styleSheet = document.createElement("style");
+                styleSheet.innerText = modalStyles;
+                document.head.appendChild(styleSheet);
+
+
+                // 2. --- Add a single event listener to the products section ---
+                const productsSection = document.querySelector('#products');
+
+                if (!productsSection) {
+                    console.warn('Product section with ID #products not found. Modal will not work.');
+                    return;
+                }
+
+                productsSection.addEventListener('click', function (e) {
+                    // We use .closest() to see if an image inside a product card was clicked
+                    const image = e.target.closest('img');
+                    const productCard = e.target.closest('.scroll-reveal, .bg-white\\/5, [class*="rounded-3xl"]');
+
+                    if (image && productCard) {
+                        e.preventDefault(); // Prevent any default browser action
+
+                        const imageSrc = image.src;
+                        // Find the title element within the same card
+                        const titleElement = productCard.querySelector('h4, h5');
+                        const productTitle = titleElement ? titleElement.textContent.trim() : 'Product Image';
+
+                        createModal(imageSrc, productTitle);
+                    }
+                });
+
+
+                // 3. --- Function to dynamically create and show the modal ---
+                function createModal(imageSrc, productTitle) {
+                    // Remove any existing modal to prevent duplicates
+                    const existingModal = document.querySelector('.product-modal-overlay');
+                    if (existingModal) {
+                        existingModal.remove();
+                    }
+
+                    // Create modal elements
+                    const overlay = document.createElement('div');
+                    overlay.className = 'product-modal-overlay';
+
+                    const content = document.createElement('div');
+                    content.className = 'product-modal-content';
+
+                    const modalImage = document.createElement('img');
+                    modalImage.className = 'product-modal-image';
+                    modalImage.src = imageSrc;
+                    modalImage.alt = productTitle; // Add alt text for accessibility
+
+                    const modalTitle = document.createElement('p');
+                    modalTitle.className = 'product-modal-title';
+                    modalTitle.textContent = productTitle;
+
+                    const closeButton = document.createElement('button');
+                    closeButton.className = 'product-modal-close';
+                    closeButton.innerHTML = '&times;';
+                    closeButton.setAttribute('aria-label', 'Close dialog'); // Accessibility
+
+                    // Assemble the modal
+                    content.appendChild(modalImage);
+                    content.appendChild(modalTitle);
+                    overlay.appendChild(content);
+                    overlay.appendChild(closeButton); // Place close button on overlay for positioning
+                    document.body.appendChild(overlay);
+
+                    // Lock background scrolling
+                    document.body.classList.add('modal-open');
+
+                    // Trigger the fade-in animation
+                    requestAnimationFrame(() => {
+                        overlay.classList.add('visible');
+                    });
+
+                    // 4. --- Function to close the modal ---
+                    function closeModal() {
+                        overlay.classList.remove('visible');
+                        // Wait for the fade-out transition to finish before removing the element
+                        overlay.addEventListener('transitionend', () => {
+                            overlay.remove();
+                            document.body.classList.remove('modal-open');
+                            // Clean up the keydown listener
+                            document.removeEventListener('keydown', onKeydown);
+                        }, { once: true });
+                    }
+
+                    // --- Add ways to close the modal ---
+                    closeButton.addEventListener('click', closeModal);
+
+                    // Close when clicking on the dark background
+                    overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) {
+                            closeModal();
+                        }
+                    });
+
+                    // Close on 'Escape' key press
+                    const onKeydown = (e) => {
+                        if (e.key === 'Escape') {
+                            closeModal();
+                        }
+                    };
+                    document.addEventListener('keydown', onKeydown);
+                }
+            })();
+    </script>
 </body>
 
 </html>
