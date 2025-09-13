@@ -564,17 +564,25 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        /* Mobile-specific fixes */
+
+/* Mobile-specific fixes V3 - Targeting the logo container */
 @media (max-width: 768px) {
-    .navbar-logo img {
-        height: 2rem;       /* smaller height */
-        max-width: 240px;   /* prevent logo from being too wide */
+    /*
+     * This new approach targets the logo's container (the <a> tag)
+     * instead of just the image. This prevents the parent flexbox
+     * from shrinking the logo on scroll.
+     */
+
+    /* 1. Set a fixed, non-shrinkable width on the logo's container */
+    .navbar-logo {
+        width: 200px;         /* Give the container a fixed width */
+        flex-shrink: 0;       /* CRITICAL: This stops the container from being squeezed */
     }
 
-    /* Keep same size even after scroll */
-    .navbar.scrolled .navbar-logo img {
-        height: 2rem;
-        max-width: 240px;
+    /* 2. Make the image fill its container */
+    .navbar-logo img {
+        width: 100%;          /* The image will now always be 100% of the container's width */
+        height: auto;
     }
 }
     </style>
