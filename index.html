@@ -1325,35 +1325,65 @@
                     </div>
                 </div>
 
-                <!-- Pricing Table Section -->
-                <div id="solar-table" class="my-16 scroll-reveal">
-                    <h3 class="text-2xl font-bold text-white mb-8 text-center font-heading">
-                        3.3kW Solar Plant Pricing Details
-                    </h3>
+<!-- Pricing Table Section -->
+<div id="solar-table" class="my-16 scroll-reveal">
+    <h3 class="text-2xl font-bold text-white mb-8 text-center font-heading">
+        3.3kW Solar Plant Pricing Details
+    </h3>
 
-                    <div class="overflow-x-auto">
-                        <table class="product-table responsive-table">
-                            <thead>
-                                <tr>
-                                    <th>Particulars</th>
-                                    <th>Qty</th>
-                                    <th>System Price</th>
-                                    <th>KSEB Deposit</th>
-                                    <th>MNRE Subsidy</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-label="Particulars">3.3 kW SOLAR PLANT</td>
-                                    <td data-label="Qty">1</td>
-                                    <td data-label="System Price">₹2,15,280</td>
-                                    <td data-label="KSEB Deposit">₹4,720</td>
-                                    <td data-label="MNRE Subsidy">₹78,000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <!-- Desktop Table -->
+    <div class="hidden md:block overflow-x-auto">
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Particulars</th>
+                    <th>Qty</th>
+                    <th>System Price</th>
+                    <th>KSEB Deposit</th>
+                    <th>MNRE Subsidy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>3.3 kW SOLAR PLANT</td>
+                    <td>1</td>
+                    <td>₹2,15,280</td>
+                    <td>₹4,720</td>
+                    <td>₹78,000</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
+    <!-- Mobile Cards -->
+    <div class="md:hidden space-y-4">
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-6">
+            <h4 class="text-xl font-bold text-brand-blue mb-4 font-heading">3.3 kW SOLAR PLANT</h4>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                    <p class="text-gray-400 text-sm font-body">Quantity</p>
+                    <p class="text-white text-lg font-bold">1</p>
+                </div>
+
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                    <p class="text-gray-400 text-sm font-body">System Price</p>
+                    <p class="text-white text-lg font-bold">₹2,15,280</p>
+                </div>
+
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                    <p class="text-gray-400 text-sm font-body">KSEB Deposit</p>
+                    <p class="text-white text-lg font-bold">₹4,720</p>
+                </div>
+
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                    <p class="text-gray-400 text-sm font-body">MNRE Subsidy</p>
+                    <p class="text-white text-lg font-bold">₹78,000</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                         <div class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
                             <h4 class="text-xl font-bold text-white mb-4 font-heading">Payment Breakdown</h4>
